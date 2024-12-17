@@ -4,27 +4,29 @@ const CardProduct = (props) => {
     const { children } = props
 
     return (
-        <div className="w-full max-w-sm bg-gray-800 border border-gray-700 rounded-lg shadow">
+        <div className="w-full max-w-sm bg-gray-800 border border-gray-700 rounded-lg shadow mx-2">
             {children}
         </div>
     )
 }
 
-const Header = () => {
+const Header = (props) => {
+    const {image} = props
+
     return (
         <a href="">
-                <img src="/images/img1.jpg" alt="img1" className="p-8 rounded-t-lg "/>
+                <img src={image} alt="img1" className="p-8 rounded-t-lg "/>
         </a>
     )
 }
 
 const Body = (props) => {
-    const { children, title } = props
+    const { children, name } = props
 
     return (
         <div className="px-5 pb-5">
             <a href="">
-                <h5 className="text-xl font-semibold tracking-tight text-white">{title}</h5>
+                <h5 className="text-xl font-semibold tracking-tight text-white">{name}</h5>
                 <p className="text-s text-white">{children}</p>
             </a>
         </div>
