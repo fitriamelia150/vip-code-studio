@@ -1,37 +1,25 @@
 import { Fragment, useState, useEffect } from "react"
 import Button from "../components/Elements/Button"
 import CardProduct from "../components/Fragments/CardProduct"
-
-const products = [
-    {
-        id: 1,
-        name: "Sepatu Buludru Pria",
-        price: 1000000,
-        image: "/images/img1.jpg",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur, similique.",
-    },
-
-    {
-        id: 2,
-        name: "Sepatu Kulit Katak",
-        price: 500000,
-        image: "/images/img1.jpg",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur, similique.",
-    }
-]
+import { getProducts } from "../services/product.service"
 
 const email = localStorage.getItem("email")
 
 const ProductsPage = () => {
     const [cart, setCart] = useState([])
     const [totalPrice, setTotalPrice] = useState(0)
+    const [products, setProducts] = useState([])
 
     useEffect(() => {
         setCart(JSON.parse(localStorage.getItem("cart")) || [])
+
+        getProducts((data)=>{
+            setProducts(data)
+        })
     },[])
 
     useEffect(() => {
-        if(cart.length > 0) {
+        if(products.length > 0 && cart.length > 0) {
             const sum = cart.reduce((acc, item) => {
                 const product = products.find((product) => product.id === item.id);
                 console.log(product.id)
@@ -40,7 +28,7 @@ const ProductsPage = () => {
             setTotalPrice(sum)
             localStorage.setItem("cart", JSON.stringify(cart))
         }
-    },[cart])
+    },[cart, products])
 
     const handleAddToCart = (id) => {
         if(cart.find(item => item.id === id)) {
@@ -62,18 +50,19 @@ const ProductsPage = () => {
     return (
 
         <Fragment>
-            <div className="h-20 bg-blue-600 flex justify-end text-white items-center px-10">
+            <div className="h-20 bg-blue-600 flex flex-wrap justify-end text-white items-center px-10">
                 {email}
                 <Button variant="ml-5 bg-black" onClick={handleLogout}>Logout</Button>
             </div>
 
             <div className="flex justify-center py-5 mx-2">
                 
-                <div className="w-2/2 flex">
-                    {products.map((product) => (
+                <div className="w-2/3 flex flex-wrap">
+                    {products.length > 0 &&
+                        products.map((product) => (
                         <CardProduct key={product.id}>
                             <CardProduct.Header image={product.image}/>
-                            <CardProduct.Body name={product.name}>
+                            <CardProduct.Body name={product.title}>
                                 {product.description}
                             </CardProduct.Body>
                             <CardProduct.Footer price={product.price} handleAddToCart={() => handleAddToCart(product.id)}/>
@@ -94,23 +83,22 @@ const ProductsPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                             {cart.map((item)=>{
-                                // if(item.id !== ""){
+                             {products.length > 0 && 
+                                cart.map((item)=>{
                                     const product = products.find((product) => product.id === item.id);
                                     return (
                                         <tr key={item.id}>
-                                            <td>{product.name}</td>
-                                            <td>Rp {product.price.toLocaleString("id-ID", {styles: 'currency', currency: 'IDR'})}</td>
+                                            <td>{product.title}</td>
+                                            <td>$ {product.price.toLocaleString("id-ID", {styles: 'currency', currency: 'USD'})}</td>
                                             <td>{item.qty}</td>
-                                            <td>Rp {(product.price * item.qty).toLocaleString("id-ID", {styles: 'currency', currency: 'IDR'})}</td>
+                                            <td>$ {(product.price * item.qty).toLocaleString("id-ID", {styles: 'currency', currency: 'USD'})}</td>
                                         </tr>
                                     )
-                                // }
                              })}
 
                              <tr className="font-bold">
                                 <td colSpan={3}>Total Price</td>
-                                <td>Rp {totalPrice.toLocaleString("id-ID", {styles: 'currency', currency: 'IDR'})}</td>
+                                <td>$ {totalPrice.toLocaleString("id-ID", {styles: 'currency', currency: 'USD'})}</td>
                              </tr>
                         </tbody>
                     </table>
