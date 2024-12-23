@@ -22,7 +22,7 @@ const ProductsPage = () => {
         if(products.length > 0 && cart.length > 0) {
             const sum = cart.reduce((acc, item) => {
                 const product = products.find((product) => product.id === item.id);
-                console.log(product.id)
+                // console.log(product.id)
                 return acc + product.price * item.qty
             }, 0)
             setTotalPrice(sum)
@@ -65,7 +65,7 @@ const ProductsPage = () => {
                             <CardProduct.Body name={product.title}>
                                 {product.description}
                             </CardProduct.Body>
-                            <CardProduct.Footer price={product.price} handleAddToCart={() => handleAddToCart(product.id)}/>
+                            <CardProduct.Footer price={product.price} handleAddToCart={() => handleAddToCart(product.id)} id={product.id}/>
                         </CardProduct>
                     ))}
                 </div>
